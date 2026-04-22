@@ -6,7 +6,7 @@
 # Usage:  bash deploy/upload_to_ec2.sh
 # ─────────────────────────────────────────────────────────────────────────────
 
-EC2_HOST="13.62.165.7"
+EC2_HOST="13.61.175.6"
 EC2_USER="ubuntu"
 PEM_KEY="algo_server.pem"   # path to your .pem file (relative to project root)
 REMOTE_DIR="/home/ubuntu/deploy"
