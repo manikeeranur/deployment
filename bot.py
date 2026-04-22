@@ -7,6 +7,7 @@ Runs ON the EC2 server and executes deploy scripts locally.
 import os
 import subprocess
 import logging
+import asyncio
 from datetime import datetime
 from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -327,7 +328,7 @@ async def button_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────
 
-def main():
+async def main():
     if not BOT_TOKEN:
         raise ValueError("BOT_TOKEN is not set in .env")
     if not ALLOWED_IDS:
@@ -335,19 +336,18 @@ def main():
 
     app = Application.builder().token(BOT_TOKEN).build()
 
-    app.add_handler(CommandHandler("start",            cmd_start))
-    app.add_handler(CommandHandler("deploy_frontend",  cmd_deploy_frontend))
-    app.add_handler(CommandHandler("deploy_backend",   cmd_deploy_backend))
-    app.add_handler(CommandHandler("deploy_all",       cmd_deploy_all))
-    app.add_handler(CommandHandler("status",           cmd_status))
-    app.add_handler(CommandHandler("logs_frontend",    cmd_logs_frontend))
-    app.add_handler(CommandHandler("logs_backend",     cmd_logs_backend))
-    app.add_handler(CommandHandler("restart",          cmd_restart))
+    app.add_handler(CommandHandler("start", cmd_start))
+    app.add_handler(CommandHandler("deploy_frontend", cmd_deploy_frontend))
+    app.add_handler(CommandHandler("deploy_backend", cmd_deploy_backend))
+    app.add_handler(CommandHandler("deploy_all", cmd_deploy_all))
+    app.add_handler(CommandHandler("status", cmd_status))
+    app.add_handler(CommandHandler("logs_frontend", cmd_logs_frontend))
+    app.add_handler(CommandHandler("logs_backend", cmd_logs_backend))
+    app.add_handler(CommandHandler("restart", cmd_restart))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    logger.info("SMC Deploy Bot started. Authorized IDs: %s", ALLOWED_IDS)
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    await app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
